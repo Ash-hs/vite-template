@@ -9,3 +9,5 @@ export const Home = () => (
     </Paper>
   </Container>
 )
+
+export default Home

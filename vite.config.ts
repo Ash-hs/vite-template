@@ -1,19 +1,37 @@
-// @ts-ignore
-// * No declaration file for less-vars-to-js
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { ViteAliases } from 'vite-aliases'
-import react from '@vitejs/plugin-react'
-
+import { VitePluginFonts } from 'vite-plugin-fonts'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
-    server: {
-        proxy: {
-        }
-    },
-    plugins: [
-        react(),
-        ViteAliases({
-            useTypescript: true
-        })
-    ]
+  define: {
+    global: 'globalThis',
+  },
+
+  server: {
+    proxy: {
+      '/api': {
+        target: '',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+    }
+  },
+  plugins: [
+    react(),
+    svgr(),
+    ViteAliases({
+      useTypescript: true
+    }),
+    VitePluginFonts({
+      // google: {
+      //   families: [{
+      //     name: 'Lato',
+      //     styles: 'wght@300;400;700;900',
+      //     defer: true
+      //   }]
+      // }
+    })
+  ]
 })

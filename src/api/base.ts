@@ -1,8 +1,9 @@
-export const http = async ({url, method = 'GET', data}: Record<string, any>) => {
+export const http = async ({url, token, method = 'GET', data}: Record<string, any>) => {
   const res = await fetch(url, {
     method,
     headers: {
       Accept: 'application/json',
+      ...(token && { Authorization: 'Bearer ' + token }),
       ...(data && {'Content-Type': 'application/json'})
     },
     ...(data && {body: JSON.stringify(data)})
@@ -12,11 +13,15 @@ export const http = async ({url, method = 'GET', data}: Record<string, any>) => 
   if (!res.ok) {
     throw Error(await res.text())
   }
-  return res.json()
+  if (res.headers.get('content-type').startsWith('application/json')) {
+    return res.json()
+  } else {
+    return res.text()
+  }
 }
 
-export const wrapHttp = async ({url, method = 'GET', data}: Record<string, any>) : Promise<[boolean, any]>=> {
-  return http({url, method, data}).then(
+export const wrapHttp = async ({url, token, method = 'GET', data}: Record<string, any>) : Promise<[boolean, any]>=> {
+  return http({url, token, method, data}).then(
     (data) => {
       return [false, data]
     },
